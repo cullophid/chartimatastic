@@ -2,8 +2,9 @@
   "name": "electron-quick-start",
   "version": "1.0.0",
   "description": "A minimal Electron application",
-  "main": "main.js",
+  "main": "src/index.js",
   "scripts": {
+    "build": "babel ",
     "start": "electron ."
   },
   "repository": "https://github.com/electron/electron-quick-start",
@@ -17,6 +18,26 @@
   "author": "GitHub",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "~1.6.2"
+    "babel": "^6.23.0",
+    "babel-preset-react-app": "^2.2.0",
+    "electron": "~1.6.2",
+    "flow-bin": "^0.42.0"
+  },
+  "babel": {
+    "presets": [
+      "react-app"
+    ]
+  },
+  "dependencies": {
+    "babel-register": "^6.24.0",
+    "hyperapp": "^0.7.1",
+    "material-ui": "^0.17.1",
+    "mysql": "^2.13.0",
+    "oolon-startapp": "^1.1.1",
+    "ramda": "^0.23.0",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-tap-event-plugin": "^2.0.1",
+    "recharts": "^0.21.2"
   }
 }
