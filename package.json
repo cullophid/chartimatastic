@@ -30,12 +30,14 @@
   },
   "dependencies": {
     "babel-register": "^6.24.0",
+    "brace": "^0.10.0",
     "hyperapp": "^0.7.1",
     "material-ui": "^0.17.1",
     "mysql": "^2.13.0",
     "oolon-startapp": "^1.1.1",
     "ramda": "^0.23.0",
     "react": "^15.4.2",
+    "react-ace": "^4.1.6",
     "react-dom": "^15.4.2",
     "react-tap-event-plugin": "^2.0.1",
     "recharts": "^0.21.2"

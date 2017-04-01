@@ -64,6 +64,7 @@ app.on('activate', function () {
 const ipc = electron.ipcMain
 
 ipc.on('getChartData', (e, query) => {
+  console.log(query)
   mysql(query)
     .then(result => e.sender.send('chartData', result))
     .catch(console.error)
