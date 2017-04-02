@@ -1,16 +1,29 @@
 //@flow weak
 
 import React from 'react'
-import {LineChart, XAxis, YAxis, Line, ResponsiveContainer, Tooltip} from 'recharts'
+import {
+  LineChart, Line, XAxis, YAxis,
+  AreaChart, Area,
+  ResponsiveContainer, Tooltip
+} from 'recharts'
 import {head, pluck, keys, omit, nth, compose, groupBy, prop, uniq, indexBy, values, map, merge} from 'ramda'
+import lazy from './lazy'
 
-const colors = [
+const COLORS = [
   '#4A148C',
   '#AD1457',
   '#0277BD',
   '#7CB342',
-  '#FF8F00'
+  '#FF8F00',
+  '#E91E63',
+  '#00838F',
+  '#009688',
+  '#F57C00',
+  '#F4511E',
+  '#FFEB3B'
 ]
+
+const color = i => COLORS[i % COLORS.length]
 
 const prepDataPoint = (x, y, key) => data =>
   merge(
@@ -21,8 +34,23 @@ const prepDataPoint = (x, y, key) => data =>
 const prepData = (x, y, key) =>
   compose(values, map(prepDataPoint(x, y, key)), groupBy(prop(x)))
 
+const renderLineChart = (x, fields, series, data) =>
+  <LineChart data={data} margin={{right: 100, top: 40, bottom: 40}}>
+    <Tooltip/>
+    <XAxis label={fields[0]} tickLine={false} dataKey={x} stroke="#aaa"/>
+    <YAxis label={fields[1]} tickLine={false} stroke="#aaa"/>
+    {series.map((s, i) => <Line key={i} type="monotone" dataKey={s} stroke={color(i)} /> ) }
+  </LineChart>
 
-export default (props) => {
+const renderAreaChart = (x, fields, series, data) =>
+  <AreaChart data={data} margin={{right: 100, top: 40, bottom: 40}}>
+    <Tooltip/>
+    <XAxis label={fields[0]} tickLine={false} dataKey={x} stroke="#aaa"/>
+    <YAxis label={fields[1]} tickLine={false} stroke="#aaa"/>
+    {series.map((s, i) => <Area key={i} type="monotone" dataKey={s} stroke={color(i)} /> ) }
+  </AreaChart>
+
+export default lazy((props) => {
   if (!props.data) return <h1>Run SQL query...</h1>
   const {fields, data} = props.data
   const x = nth(-2, fields)
@@ -35,13 +63,12 @@ export default (props) => {
 
   return (
     <ResponsiveContainer height={500} width="100%">
-      <LineChart data={chartData} margin={{right: 40, top: 40, bottom: 40}}>
-        <Tooltip/>
-        <XAxis label={fields[0]} tickLine={false} dataKey={x} stroke="#aaa"/>
-        <YAxis label={fields[1]} tickLine={false} stroke="#aaa"/>
-        {series.map((s, i) => <Line key={i} type="monotone" dataKey={s} stroke={colors[i]} /> ) }
-      </LineChart>
+      {
+        props.area ? renderAreaChart(x, fields, series, chartData) :
+        renderLineChart(x, fields, series, chartData)
+    }
+
     </ResponsiveContainer>
   )
 
-}
+})

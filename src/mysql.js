@@ -2,11 +2,20 @@
 import mysql from 'mysql'
 import {pluck} from 'ramda'
 
-const conn = mysql.createConnection('mysql://sentia:tigerwaterclockboulder@alpr.cluster-cizexdu9ykby.eu-west-1.rds.amazonaws.com:3306/realdania')
+let connections = {}
 
-export default query =>
-  new Promise((resolve, reject) =>
+export const createConnection = url => {
+  const conn = mysql.createConnection(url)
+  connections[url] = conn
+  return conn
+}
+
+export default (url, query) => {
+  console.log('cached?', !!connections[url])
+  const conn = connections[url] || createConnection(url)
+  return new Promise((resolve, reject) =>
     conn.query(query, (err, data, fields) => {
       err ? reject(err) : resolve({data, fields: pluck('name', fields)})
     })
   )
+}
