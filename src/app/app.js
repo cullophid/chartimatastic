@@ -6,6 +6,9 @@ import BarChart from './barchart'
 import PieChart from './piechart'
 import Table from './table'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import Paper from 'material-ui/Paper'
+import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation'
+import FontIcon from 'material-ui/FontIcon'
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
 import FlatButton from 'material-ui/FlatButton'
@@ -18,25 +21,19 @@ import * as api from './api'
 import 'brace/mode/mysql'
 import 'brace/theme/tomorrow'
 
-const Chart = ({type, data}) => {
-  if(!data) return null
-  switch (type) {
-      case 'line':
-        return <LineChart data={data}/>
-      case 'area':
-        return <LineChart area={true} data={data}/>
-      case 'bar':
-        return <BarChart data={data}/>
-      case 'stackedbar':
-        return <BarChart data={data} stacked={true}/>
-      case 'pie':
-        return <PieChart data={data}/>
-      case 'table':
-        return <Table data={data}/>
-      default:
-        return null
-  }
+
+const chartTypes = {
+  line: {label: 'Line',  component: data => <LineChart data={data}/> },
+  area: {label: 'Area',  component: data => <LineChart area data={data}/> },
+  bar: {label: 'Bar',  component: data => <BarChart data={data}/> },
+  stacked: {label: 'Stacked',  component: data => <BarChart stacked data={data}/> },
+  pie: {label: 'Pie',  component: data => <PieChart data={data}/> },
+  table: {label: 'Table',  component: data => <Table data={data}/> }
 }
+
+const Chart = ({type, data}) =>
+  chartTypes[type] ? chartTypes[type].component(data) : null
+
 
 export default class QueryPage extends React.Component {
   constructor() {
@@ -69,7 +66,7 @@ export default class QueryPage extends React.Component {
     console.log(this.state)
     return (
       <MuiThemeProvider>
-        <div style={{padding: 15}}>
+        <div style={{padding: 15, paddingTop: 30}}>
           <Dialog
             title="Error"
             actions={[
@@ -82,11 +79,12 @@ export default class QueryPage extends React.Component {
               ]
             }
             modal={false}
-            open={this.state.error}
+            open={!!this.state.error}
             onRequestClose={() => this.setState({error: null})}
             >
             <p>{path(['state', 'error', 'code'], this)}</p>
           </Dialog>
+
           <Card style={{marginBottom: 15}}>
             <CardActions>
               <TextField
@@ -101,45 +99,67 @@ export default class QueryPage extends React.Component {
           <Card style={{marginBottom: 15}}>
             <CardTitle subtitle="MySQL Query"/>
             <CardActions>
-            <Ace
-              mode="mysql"
-              theme="tomorrow"
-              showGutter={false}
-              onChange={query => this.setState({query})}
-              value={this.state.query}
-              maxLines={6}
-              minLines={6}
-              width='100%'
-              wrapEnabled
-              name="SQLEDITOR"
-              editorProps={{$blockScrolling: true}}
-            />
+              <Ace
+                mode="mysql"
+                theme="tomorrow"
+                showGutter={false}
+                onChange={query => this.setState({query})}
+                value={this.state.query}
+                maxLines={6}
+                minLines={6}
+                width='100%'
+                wrapEnabled
+                name="SQLEDITOR"
+                editorProps={{$blockScrolling: true}}
+              />
             </CardActions>
+
             <CardActions>
               <RaisedButton fullWidth primary type="submit" onClick={() => this.submitQuery()}>Go</RaisedButton>
             </CardActions>
           </Card>
-          <SelectField
-            style={{marginBottom: 15}}
-            floatingLabelText="Cart Type"
-            value = {this.state.chartType}
-            onChange ={(e, i, chartType) => this.setState({chartType})}
-          >
-            <MenuItem value="bar" primaryText="Bar"/>
-            <MenuItem value="stackedbar" primaryText="Stacked Bar"/>
-            <MenuItem value="line" primaryText="Line"/>
-            <MenuItem value="area" primaryText="Area"/>
-            <MenuItem value="pie" primaryText="Pie"/>
-            <MenuItem value="table" primaryText="Table"/>
-          </SelectField>
-          <Card>
-            <CardActions>
-              <Chart type={this.state.chartType} data={this.state.data}/>
-            </CardActions>
+          <Paper zDepth={1} style={{marginBottom: 15}}>
+            <BottomNavigation selectedIndex={Object.keys(chartTypes).indexOf(this.state.chartType)}>
+              <BottomNavigationItem
+                label="Line"
+                icon={<FontIcon className="material-icons">show_chart</FontIcon>}
+                onTouchTap={() => this.setState({chartType: 'line'})}
+              />
+              <BottomNavigationItem
+                label="Area"
+                icon={<FontIcon className="material-icons">show_chart</FontIcon>}
+                onTouchTap={() => this.setState({chartType: 'area'})}
+              />
+              <BottomNavigationItem
+                label="Bar"
+                icon={<FontIcon className="material-icons">insert_chart</FontIcon>}
+                onTouchTap={() => this.setState({chartType: 'bar'})}
+              />
+              <BottomNavigationItem
+                label="Stacked"
+                icon={<FontIcon className="material-icons">insert_chart</FontIcon>}
+                onTouchTap={() => this.setState({chartType: 'stacked'})}
+              />
+              <BottomNavigationItem
+                label="Pie"
+                icon={<FontIcon className="material-icons">pie_chart</FontIcon>}
+                onTouchTap={() => this.setState({chartType: 'pie'})}
+              />
+              <BottomNavigationItem
+                label="Table"
+                icon={<FontIcon className="material-icons">grid_on</FontIcon>}
+                onTouchTap={() => this.setState({chartType: 'table'})}
+              />
+           </BottomNavigation>
+         </Paper>
+         <Card>
+          <CardActions>
+          <Chart type={this.state.chartType} data={this.state.data}/>
+          </CardActions>
           </Card>
-        </div>
-      </MuiThemeProvider>
-    )
+          </div>
+          </MuiThemeProvider>
+          )
 
   }
 }

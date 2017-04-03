@@ -5,13 +5,12 @@ import {pluck} from 'ramda'
 let connections = {}
 
 export const createConnection = url => {
-  const conn = mysql.createConnection(url)
+  const conn = mysql.createPool(url)
   connections[url] = conn
   return conn
 }
 
 export default (url, query) => {
-  console.log('cached?', !!connections[url])
   const conn = connections[url] || createConnection(url)
   return new Promise((resolve, reject) =>
     conn.query(query, (err, data, fields) => {
