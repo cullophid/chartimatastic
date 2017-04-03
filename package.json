@@ -1,5 +1,5 @@
 {
-  "name": "electron-quick-start",
+  "name": "chartimatistic",
   "version": "1.0.0",
   "description": "A minimal Electron application",
   "main": "dist/main.js",
@@ -8,7 +8,7 @@
     "start": "electron .",
     "dev": "yarn run build && yarn run start"
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://github.com/cullophid/chartimatistic",
   "keywords": [
     "Electron",
     "quick",
