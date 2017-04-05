@@ -2,19 +2,12 @@
 import mysql from 'mysql'
 import {pluck} from 'ramda'
 
-let connections = {}
-
-export const createConnection = url => {
+export default url => {
   const conn = mysql.createPool(url)
-  connections[url] = conn
-  return conn
-}
-
-export default (url, query) => {
-  const conn = connections[url] || createConnection(url)
-  return new Promise((resolve, reject) =>
-    conn.query(query, (err, data, fields) => {
-      err ? reject(err) : resolve({data, fields: pluck('name', fields)})
-    })
-  )
+  return query =>
+    new Promise((resolve, reject) =>
+      conn.query(query, (err, data, fields) => {
+        err ? reject(err) : resolve({data, fields: pluck('name', fields)})
+      })
+    )
 }

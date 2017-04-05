@@ -21,7 +21,6 @@ import {View, ScrollableView, Layout} from './layout'
 
 const chartTypes = {
   line: {label: 'Line',  component: data => <LineChart data={data}/> },
-  area: {label: 'Area',  component: data => <LineChart area data={data}/> },
   bar: {label: 'Bar',  component: data => <BarChart data={data}/> },
   stacked: {label: 'Stacked',  component: data => <BarChart stacked data={data}/> },
   pie: {label: 'Pie',  component: data => <PieChart data={data}/> },
@@ -111,26 +110,25 @@ export default class QueryPage extends React.Component {
                   icon={<FontIcon className="material-icons">show_chart</FontIcon>}
                   onTouchTap={() => this.setState({chartType: 'line'})}
                 />
-                <BottomNavigationItem
-                  label="Area"
-                  icon={<FontIcon className="material-icons">show_chart</FontIcon>}
-                  onTouchTap={() => this.setState({chartType: 'area'})}
-                />
+
                 <BottomNavigationItem
                   label="Bar"
                   icon={<FontIcon className="material-icons">insert_chart</FontIcon>}
                   onTouchTap={() => this.setState({chartType: 'bar'})}
                 />
+
                 <BottomNavigationItem
                   label="Stacked"
                   icon={<FontIcon className="material-icons">insert_chart</FontIcon>}
                   onTouchTap={() => this.setState({chartType: 'stacked'})}
                 />
+
                 <BottomNavigationItem
                   label="Pie"
                   icon={<FontIcon className="material-icons">pie_chart</FontIcon>}
                   onTouchTap={() => this.setState({chartType: 'pie'})}
                 />
+
                 <BottomNavigationItem
                   label="Table"
                   icon={<FontIcon className="material-icons">grid_on</FontIcon>}

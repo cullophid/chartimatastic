@@ -1,6 +1,6 @@
 //@flow weak
 import {app, BrowserWindow, Menu} from 'electron'
-import mysql from './mysql'
+import db from './db'
 import path from 'path'
 import url from 'url'
 import rpc from './rpc-main'
@@ -65,4 +65,4 @@ app.on('activate', function () {
 // code. You can also put them in separate files and require them here.
 
 rpc('queryDb', ({url, query}) =>
-  mysql(url, query).catch(e => Promise.reject(e.message)))
+  db(url, query).catch(e => Promise.reject(e.message)))
