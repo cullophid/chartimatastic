@@ -1,33 +1,13 @@
 //@flow weak
-import electron from 'electron'
+import {app, BrowserWindow, Menu} from 'electron'
 import mysql from './mysql'
 import path from 'path'
 import url from 'url'
-import rpc from './rpc'
+import rpc from './rpc-main'
+import menu from './menu'
 // Module to control application life.
-const app = electron.app
-const Menu = electron.Menu
 // Module to create native browser window.
-const BrowserWindow = electron.BrowserWindow
 
-let menuTemplate = [{
-  label: 'Edit',
-  submenu: [{
-    label: 'Toggle Developer Tools',
-    accelerator: (function () {
-      if (process.platform === 'darwin') {
-        return 'Alt+Command+I'
-      } else {
-        return 'Ctrl+Shift+I'
-      }
-    })(),
-    click: function (item, focusedWindow) {
-      if (focusedWindow) {
-        focusedWindow.toggleDevTools()
-      }
-    }
-  }]
-}]
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -43,7 +23,6 @@ function createWindow () {
     protocol: 'file:',
     slashes: true
   }))
-  Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplate))
 
 
   // Emitted when the window is closed.
@@ -58,7 +37,10 @@ function createWindow () {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', () => {
+  Menu.setApplicationMenu(menu)
+  createWindow()
+})
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
@@ -82,4 +64,5 @@ app.on('activate', function () {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
-rpc('queryDb', ({url, query}) => mysql(url, query))
+rpc('queryDb', ({url, query}) =>
+  mysql(url, query).catch(e => Promise.reject(e.message)))

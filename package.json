@@ -1,10 +1,14 @@
 {
-  "name": "chartimatistic",
+  "name": "chartimatastic",
   "version": "1.0.0",
   "description": "A minimal Electron application",
-  "main": "dist/main.js",
+  "main": "build/main.js",
   "scripts": {
-    "build": "babel -d dist src && cp src/index.html dist/index.html",
+    "build": "babel -d build src && cp src/index.html build/index.html",
+    "prepackage": "rm -r -f dist && yarn run build",
+    "package": "electron-packager . chartimatastic --icon pie-chart.png.icns --out dist",
+    "package:mac": "yarn run package -- --platform=darwin",
+    "package:linux": "yarn run package -- --platform=linux",
     "start": "electron .",
     "dev": "yarn run build && yarn run start"
   },
